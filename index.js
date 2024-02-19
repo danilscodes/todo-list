@@ -1,91 +1,116 @@
-document.addEventListener('DOMContentLoaded', function() {
-  // Code placed here will run when the DOM content has loaded.
-
-  var todoList = document.getElementById('todo-list');
-  var todoInput = document.getElementById('todo-input');
-  var addButton = document.getElementById('add-button');
-  var todoCount = 0;
-
-  // addTodo function will dynamically add a div element
-  // containing the description to the todo-list div.
-  var addTodo = function() {
-    // Create a div element and assign it to todoCol variable.
-    var todoCol = document.createElement('div');
-    // Give it a class of col-xs-12 and todo.
-    todoCol.setAttribute('class', 'col-xs-12 todo');
-  
-    // Create another div element and assign it to todoRow variable.
-    var todoRow = document.createElement('div');
-    // Give it a class of row.
-    todoRow.setAttribute('class', 'row');
-  
-    // Create a button element and assign it to removeButton variable.
-    var removeButton = document.createElement('button');
-  
-    // Set class attribute of removeButton as btn, btn-danger and remove-button.
-    removeButton.setAttribute('class','btn btn-danger remove-button');
-  
-    // Add the string "REMOVE" into the innerHTML of removeButton.
-    removeButton.innerHTML = "REMOVE";
-  
-    // Define the event listener for click so that this todoCol element
-    // will be removed when the user clicks removeButton
-    removeButton.onclick = function() {
-      // We use 'this' to point to the remove button element.
-      // this.parentNode.parentNode will assign todoCol to variable child
-      var child = this.parentNode.parentNode;
-  
-      // We use the removeChild method to delete child from the todo-list
-      todoList.removeChild(child);
-      
-      //  remove 1 from todoCount
-      todoCount--;
-    };
-  
-    // Create an h5 element and assign it to the h5 variable.
-    var h5 = document.createElement('h5');
-  
-    // Sets the class attribute of h5 to take up 8 columns.
-    h5.setAttribute('class', 'col-xs-8');
-  
-    // Assign the value of todoInput, which is the text the user typed
-    // into the input element, to the innerHTML property of h5.
-    h5.innerHTML = todoInput.value;
-  
-    // Add h5 as the last child element to the todoRow element.
-    todoRow.appendChild(h5);
-  
-    // Add removeButton as the last child element to todoRow.
-    todoRow.appendChild(removeButton);
-  
-    // Add todoRow as the last child element to the todoCol element.
-    todoCol.appendChild(todoRow);
-  
-    // Append todoCol as the last child element to the todoList div.
-    todoList.appendChild(todoCol);
-  };
-
-  var checkThenAddTodo = function () {
-    // First we make sure that there is less than 10 to-dos,
-    // and some value exists in the input element.
-    if (todoCount < 10 && todoInput.value !== '') {
-  
-      // Executes the addTask function we defined earlier.
-      addTodo();
-  
-      // Add 1 to taskCount.
-      todoCount++;
-  
-      // Clear the input element by setting it to empty string.
-      todoInput.value = '';
-    }
+$(document).ready(function() {
+  // ************** GET & DISPLAY ALL TASKS  **************
+  var getAndDisplayAllTasks = function () {
+    $.ajax({
+      type: 'GET',
+      url: 'https://fewd-todolist-api.onrender.com/tasks?api_key=1193',
+      dataType: 'json',
+      success: function (response, textStatus) {
+        $('#todo-list').empty();
+        response.tasks.forEach(function (task) {
+          $('#todo-list').append('<div class="row"><p class="col-xs-8">' + task.content + '</p><button class="delete" data-id="' + task.id + '">Delete</button><input type="checkbox" class="mark-complete" data-id="' + task.id + '"' + (task.completed ? 'checked' : '') + '>');
+        });
+      },
+      error: function (request, textStatus, errorMessage) {
+        console.log(errorMessage);
+      }
+    });
   }
-  
-  addButton.addEventListener('click', checkThenAddTodo);
-  
-  todoInput.addEventListener('keyup', function (event) {
-    if (event.key === "Enter") {
-      checkThenAddTodo();
+
+  // ************** CREATE TASK **************
+
+  var createTask = function () {
+    $.ajax({
+      type: 'POST',
+      url: 'https://fewd-todolist-api.onrender.com/tasks?api_key=1193',
+      contentType: 'application/json',
+      dataType: 'json',
+      data: JSON.stringify({
+        task: {
+          content: $('#new-task-content').val()
+        }
+      }),
+      success: function (response, textStatus) {
+        $('#new-task-content').val('');
+        getAndDisplayAllTasks();
+      },
+      error: function (request, textStatus, errorMessage) {
+        console.log(errorMessage);
+      }
+    });
+  }
+
+  $('#create-task').on('submit', function (e) {
+    e.preventDefault();
+    createTask();
+  });
+
+  // ************** DELETE TASK **************
+
+  var deleteTask = function (id) {
+    $.ajax({
+      type:'DELETE',
+      url: 'https://fewd-todolist-api.onrender.com/tasks/' + id + '?api_key=1193',
+      success: function (response, textStatus) {
+        getAndDisplayAllTasks();
+      },
+      error: function (request, textStatus, errorMessage) {
+        console.log(errorMessage);
+      }
+    });
+  }
+
+  $(document).on('click', '.delete', function() {
+    deleteTask($(this).data('id'));
+  });
+
+  // ************** MARK TASK COMPLETE **************
+
+  var markTaskComplete = function (id) {
+    $.ajax({
+      type: 'PUT',
+      url: 'https://fewd-todolist-api.onrender.com/tasks/' + id + '/mark_complete?api_key=1193',
+      dataType: 'json',
+      success: function (response, textStatus) {
+        getAndDisplayAllTasks();
+      },
+      error: function (request, textStatus, errorMessage) {
+        console.log(errorMessage);
+      }
+    });
+  }
+
+  $(document).on('change', '.mark-complete', function () {
+    if (this.checked) {
+      markTaskComplete($(this).data('id'));
     }
   });
+
+  // ************** MARK TASK ACTIVE **************
+
+  var markTaskActive = function (id) {
+    $.ajax({
+      type: 'PUT',
+      url: 'https://fewd-todolist-api.onrender.com/' + id + '/mark_active?api_key=1193',
+      dataType: 'json',
+      success: function (response, textStatus) {
+        getAndDisplayAllTasks();
+      },
+      error: function (request, textStatus, errorMessage) {
+        console.log(errorMessage);
+      }
+    });
+  }
+
+  $(document).on('change', '.mark-complete', function() {
+    if (this.checked) {
+      markTaskComplete($(this).data('id'));
+    } else {
+      markTaskActive($(this).data('id'));
+    }
+  });
+
+  // ************** DISPLAY LATEST DATA **************
+
+  getAndDisplayAllTasks();
 });
