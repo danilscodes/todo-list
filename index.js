@@ -8,7 +8,7 @@ $(document).ready(function() {
       success: function (response, textStatus) {
         $('#todo-list').empty();
         response.tasks.forEach(function (task) {
-          $('#todo-list').append('<div class="row"><p class="col-xs-8">' + task.content + '</p><button class="delete" data-id="' + task.id + '">Delete</button><input type="checkbox" class="mark-complete" data-id="' + task.id + '"' + (task.completed ? 'checked' : '') + '>');
+          $('#todo-list').append('<div class="row todo"><p class="col-xs-8">' + task.content + '</p><button class="delete btn btn-sm btn-danger" data-id="' + task.id + '">Delete</button><input type="checkbox" class="mark-complete" data-id="' + task.id + '"' + (task.completed ? 'checked' : '') + '>');
         });
       },
       error: function (request, textStatus, errorMessage) {
@@ -91,7 +91,7 @@ $(document).ready(function() {
   var markTaskActive = function (id) {
     $.ajax({
       type: 'PUT',
-      url: 'https://fewd-todolist-api.onrender.com/' + id + '/mark_active?api_key=1193',
+      url: 'https://fewd-todolist-api.onrender.com/tasks/' + id + '/mark_active?api_key=1193',
       dataType: 'json',
       success: function (response, textStatus) {
         getAndDisplayAllTasks();

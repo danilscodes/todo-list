@@ -2,22 +2,20 @@
   margin-top: 10px;
 }
 
-#todo-input {
-  margin-bottom: 5px;
-}
-
-/* This will fade in the new added tasks using the animation property */
 .todo {
-  margin-bottom: 10px;
-  opacity: 0;
-  -webkit-animation: fadeIn .5s linear forwards;
-  -moz-animation: fadeIn .5s linear forwards;
-  animation: fadeIn .5s linear forwards;
+  padding: 5px;
 }
 
-/* you need to define the fadeIn keyframe property for it to work */
-@keyframes fadeIn {
-  to {
-    opacity: 1;
-  }
+.delete {
+  margin-right: 5px;
+}
+
+#create-task {
+  margin-top: 10px;
+}
+
+.btn-sm {
+  margin-top: -3px;
+  padding-top: 3px;
+  padding-bottom: 3px;
 }

@@ -2,10 +2,11 @@
 <html lang="en">
   <head>
     <meta charset="utf-8">
-    <title>Get Sh!t Done</title>
+    <title>Todo List</title>
     
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    
     <link href="index.css" rel="stylesheet">
     <script src="index.js"></script>
   </head>
@@ -15,7 +16,7 @@
       <div class="row">
         <div class="col-xs-12">
           <!-- TITLE -->
-          <h2>Get Sh!t Done</h2>
+          <h2>Todo List</h2>
           
           <!-- WHERE TODOS GO -->
           <div id="todo-list">
@@ -23,8 +24,8 @@
 
           <!-- CREATE NEW TASK BUTTON -->
           <form id="create-task">
-            <input id="new-task-content" type="text" placeholder="new task" required/>
-            <button>Create</button>
+            <input id="new-task-content" type="text" placeholder="New Task" required/>
+            <button id="add-button" type="button" class="btn btn-sm btn-primary">Create</button>
           </form>
         </div>
       </div>
