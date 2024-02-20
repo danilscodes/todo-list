@@ -7,7 +7,7 @@ $(document).ready(function() {
     getAndDisplayTasks();
   }
   
-  // ************** GET & DISPLAY ALL TASKS  **************
+  // ************** GET & DISPLAY TASKS  **************
   var getAndDisplayTasks = function () {
     $.ajax({
       type: 'GET',
@@ -154,7 +154,7 @@ $(document).ready(function() {
     }
   });
 
-  // ************** DISPLAY LATEST DATA **************
+  // ************** DISPLAY & FILTER LATEST DATA **************
 
   getAndDisplayTasks();
 
